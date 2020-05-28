@@ -17,9 +17,9 @@ global device_list
 
 class createForm(FlaskForm):
   
-  device = SelectField('Device')
-  command = SelectField('Command', choices=[('show interfaces status', 'show interfaces status'), ('show mac address-table vlan', 'show mac address-table vlan'), ('show mac address-table interface', 'show mac address-table interface'), ('show vlan id', 'show vlan id')])
-  params = StringField('Params', validators=[InputRequired()])
+  device = SelectField('Urządzenie')
+  command = SelectField('Polecenie', choices=[('show interfaces status', 'show interfaces status'), ('show mac address-table vlan', 'show mac address-table vlan'), ('show mac address-table interface', 'show mac address-table interface'), ('show vlan id', 'show vlan id')])
+  params = StringField('Parametry', validators=[InputRequired()])
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '443436456542'
@@ -62,6 +62,7 @@ def index():
     switch = request.form.get("device")
     command = request.form.get("command")
     params = request.form.get("params")
+    # TODO: Validate all inputs
     try:
       conn = ConnectHandler(device_type='cisco_ios', host=switch, username=NET_USERNAME, password=NET_PASSWORD)
       output = conn.send_command(command)
@@ -69,7 +70,7 @@ def index():
       output = "Oops.. something went wrong when connecting to the device"
 
     
-    return render_template("home.html", form=form, result=output)
+    return render_template("home.html", form=form, result=output.strip())
   else:
     return render_template("home.html", form=form)
 

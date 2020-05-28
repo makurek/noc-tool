@@ -13,17 +13,16 @@
         {
         </style>
 	<div class="container">
-           <p class="h2">NOC tool</p>
-	   <form method="POST" class="form-inline" action="/">
-             <div class="form-group">
-	        {{ form.csrf_token }}
+     <p class="h2">NOC tool</p>
+	   <form method="POST" class="form" action="/">
+     <div class="form-group">
+      	        {{ form.csrf_token }}
                 {{ wtf.form_field(form.device) }}
-		{{ wtf.form_field(form.command) }}
-		{{ wtf.form_field(form.params) }}
-	     </div>
+            		{{ wtf.form_field(form.command) }}
+            		{{ wtf.form_field(form.params) }}
+	   </div>
 	     <button type="submit" class="btn btn-primary btn-sm">Execute command</button>
 	   </form>
-       	   <div width="40%">
 	   <br>
            {% if result %}
               <div class="container">
@@ -34,7 +33,7 @@
 		</pre>
 	      </div>
            {% endif %}
-           </div>
+          
 	</div>	
 {% endblock %}
 {% block scripts %}
