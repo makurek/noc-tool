@@ -64,6 +64,7 @@ def index():
     params = request.form.get("params")
     # TODO: Validate all inputs
     try:
+      # TODO: timeout should be 5 seconds max
       conn = ConnectHandler(device_type='cisco_ios', host=switch, username=NET_USERNAME, password=NET_PASSWORD)
       output = conn.send_command(command)
     except:
