@@ -11,15 +11,15 @@ from flask import request
 from flask_bootstrap import Bootstrap
 from wtforms import StringField
 from wtforms import SelectField
-from wtforms.validators import InputRequired
+from wtforms.validators import *
 
 global device_list
 
 class createForm(FlaskForm):
   
   device = SelectField('Urządzenie')
-  command = SelectField('Polecenie', choices=[('show interfaces status', 'show interfaces status'), ('show mac address-table vlan', 'show mac address-table vlan'), ('show mac address-table interface', 'show mac address-table interface'), ('show vlan id', 'show vlan id')])
-  params = StringField('Parametry', validators=[InputRequired()])
+  command = SelectField('Polecenie')
+  params = StringField('Parametry', validators=[Optional(), Regexp('([0-9]+)*(Gi[a-z]*[0-9]\/[0-9]+)', message='Nieprawidłowy format.')])
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '443436456542'
@@ -46,29 +46,39 @@ def index():
   if str(status).startswith('5'):
     return render_template("error.html", error="Server error")
 
+  command_list = [('show interfaces status', 'show interfaces status'), ('show mac address-table vlan', 'show mac address-table vlan'), ('show mac address-table interface', 'show mac address-table interface'), ('show vlan id', 'show vlan id')]
   device_list = []
   devices = r.json()['devices']
   for k,v in devices.items():
     t = (v['hostname'], v['hostname'])
     device_list.append(t)
 
-
+  # How to sort a list of tuples?
+  device_list = sorted(device_list, key=lambda x: x[0])
   form = createForm()   
   form.device.choices = device_list
+  form.command.choices = command_list
 
   if form.validate_on_submit():
         
   	# Get all params 
+    
     switch = request.form.get("device")
     command = request.form.get("command")
     params = request.form.get("params")
-    # TODO: Validate all inputs
-    try:
-      # TODO: timeout should be 5 seconds max
-      conn = ConnectHandler(device_type='cisco_ios', host=switch, username=NET_USERNAME, password=NET_PASSWORD)
-      output = conn.send_command(command)
-    except:
-      output = "Oops.. something went wrong when connecting to the device"
+
+    # Validate user input
+    if (switch in [i[0] for i in device_list]) and (command in [i[0] for i in command_list]):
+
+      try:
+        conn = ConnectHandler(device_type='cisco_ios', host=switch,
+            username=NET_USERNAME, password=NET_PASSWORD, timeout=5)
+        output = conn.send_command(command + ' ' + params)
+      except:
+        output = "Oops.. something went wrong when connecting to the device"
+    else:
+
+      return render_template("error.html", error="Input validation failed")
 
     
     return render_template("home.html", form=form, result=output.strip())
