@@ -1,0 +1,40 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}
+Web diag tool
+{% endblock %}
+
+{% block content %}
+      
+        <style>
+        .li { 
+           width: 10%;
+        {
+        </style>
+
+
+<div class="container">
+     <h2>Web diag tool</h2>
+	   <form method="POST" class="form" action="/">
+     <div class="form-group">
+      	        {{ form.csrf_token }}
+                {{ wtf.form_field(form.device) }}
+            		{{ wtf.form_field(form.command) }}
+            		{{ wtf.form_field(form.params) }}
+	   </div>
+	     <button type="submit" class="btn btn-primary btn-sm">Wykonaj polecenie</button>
+	   </form>
+	   <br>
+           {% if result %}
+           <p>Wygenerowano w {{ time }}</p>              
+		<pre><code>{{ result }}</code></pre>
+	  
+           {% endif %}
+          
+	</div>	
+{% endblock %}
+{% block scripts %}
+   {{ super() }}
+   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+{% endblock %}

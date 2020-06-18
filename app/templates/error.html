@@ -1,0 +1,16 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}
+<title>Web diag tool</title>
+{% endblock %}
+
+{% block content %}
+      
+	<div class="container">
+    <h1>{{ error }}</h1>
+	</div>	
+{% endblock %}
+{% block scripts %}
+   {{ super() }}
+   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+{% endblock %}
