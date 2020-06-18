@@ -44,6 +44,7 @@ def index():
     return render_template("error.html", error="Caught generic exception while connecting to Observium API")
 
   status = r.status_code
+  # This is not an exception!
   if str(status).startswith('5'):
     return render_template("error.html", error="Server error")
 
@@ -74,7 +75,7 @@ def index():
       try:
         # Certain devices support telnet only, this is temporary workaround
         t1 = datetime.datetime.now()
-        if switch in ['dc1-t1s2-4948', 'zab-wol-4948', 'rze-bat-4948', 'pys-nas-4948', 'mik-tow-3550', 'knu-kap-4900', 'kat-sok-4948', 'kat-lig-4948', 'kat-gos-4948-3-pot8']:
+        if switch in DEVICES_TELNET:
           conn = ConnectHandler(device_type='cisco_ios_telnet', host=switch,
               username=NET_USERNAME, password=NET_PASSWORD, timeout=5)
           output = conn.send_command(command + ' ' + params)
