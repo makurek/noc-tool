@@ -1,6 +1,6 @@
 flask==1.1.2
 flask-bootstrap==3.3.7.1
 netmiko==3.1.1
-requests==2.23.0
+requests==2.31.0
 flask-wtf==0.14.3
 wtforms==2.3.1
